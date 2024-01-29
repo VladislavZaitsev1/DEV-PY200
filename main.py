@@ -1,144 +1,78 @@
-# TODO Написать 3 класса с документацией и аннотацией типов
-import doctest
-from typing import Union
+BOOKS_DATABASE = [
+    {
+        "id": 1,
+        "name": "test_name_1",
+        "pages": 200,
+    },
+    {
+        "id": 2,
+        "name": "test_name_2",
+        "pages": 400,
+    }
+]
 
-class Horsehouse:
-    def __init__(self, stalls: int, horses_in_stalls: int ):
-        if not isinstance(stalls, int):
+
+# TODO написать класс Book
+class Book:
+    def __init__(self, id_: int, name: str, pages: int):
+        if not isinstance(id_, int):
             raise TypeError('Ошибка типа! Параметр должен быть int')
-        if stalls < 0:
-            raise ValueError('Количество стоил не может быть отрицательным')
-        self.stalls = stalls
+        if id_ < 0:
+            raise ValueError('Значение должно быть больше 0')
 
-        if not isinstance(horses_in_stalls, int):
+        if not isinstance(name, str):
+            raise TypeError('Ошибка типа! Параметр должен быть str')
+
+        if not isinstance(pages, int):
             raise TypeError('Ошибка типа! Параметр должен быть int')
-        if horses_in_stalls < 0:
-            raise ValueError('Количество  лошадей в стойлах не может быть отрицательным')
-        self.stalls = stalls
-        self.horses = horses_in_stalls
+        if id_ < 0:
+            raise ValueError('Значение должно быть больше 0')
 
-    def add_horses_to_stalls(self, add_horses: int) -> None:
-        """
-        Добавление лошадей в стойла.
-        :param add_horses: Количество добавляемых лошадей
-
-        :raise ValueError: Если количество добавляемых лошадей больше свободных стоил, то вызываем ошибку
-
-        Примеры:
-        >>> horsehouse = Horsehouse(10, 0)
-        >>> horsehouse.add_horses_to_stalls(7)
-        """
-        if not isinstance(add_horses, int):
-            raise TypeError("Добавляемые лошади должны быть типа int")
-        if add_horses < 0:
-            raise ValueError("Добавляемые лошади должны быть больше 0")
-
-    def remove_horses_from_stalls(self, remove_horses: int) -> None:
-        """
-        Удаление лошадей из стойла
-
-        :param remove_horses: Количество удаляемых лошадей
-        :raise ValueError: Если количество лошадей превышает количество стоил,
-        то возвращается ошибка.
-
-        :return: Количество удаленных лошадей
-
-        Примеры:
-        >>> horsehouse = Horsehouse(10, 0)
-        >>> horsehouse.remove_horses_from_stalls(7)
-        """
+        self.id_ = id_
+        self.name = name
+        self.pages = pages
 
 
-class Parking:
-    def __init__(self, free_packing_places: int, full_parking_places: int):
-        if not isinstance(free_packing_places, int):
-            raise TypeError('Ошибка типа! Параметр должен быть int')
-        if free_packing_places < 0:
-            raise ValueError('Количество свободных парковочных мест не может быть отрицательным')
+    def __str__(self) -> str:
+        return f'Книга "{self.name}"'
 
-        if not isinstance(full_parking_places, int):
-            raise TypeError('Ошибка типа! Параметр должен быть int')
-        if full_parking_places < 0:
-            raise ValueError('Количество занятых мест не может быть отрицательным')
-        self.free_packing_places = free_packing_places
-        self.full_parking_places = full_parking_places
+    def __repr__(self) -> str:
+        return f'Book(id_={self.id_!r}, name={self.name!r}, pages={self.pages!r})'
 
-    def add_cars_to_parking(self, add_cars: int) -> None:
-        """
-        Добавление машин на парковку.
-        :param add_cars: Количество добавляемых машин
+# TODO написать класс Library
+class Library:
 
-        :raise ValueError: Если количество добавляемых машин больше мест, то вызываем ошибку
+    def __init__(self, books: list = None):
+        if not books:
+            self.books = []
+        else:
+            self.books = books
 
-        Примеры:
-        >>> parking = Parking(10, 0)
-        >>> parking.add_cars_to_parking(10)
-        """
-        if not isinstance(add_cars, int):
-            raise TypeError("Занятые парковочные местадолжны быть типа int")
-        if add_cars < 0:
-            raise ValueError("Занятые парковочные местадолжны быть больше 0")
+    def get_next_book_id(self) -> int:
+        if not self.books:
+            i = 1
+        else:
+            list_id = [Book.id_ for Book in list_books]
+            i = list_id[-1] + 1
+        return i
 
-    def remove_cars_from_parking(self, remove_cars: int) -> None:
-        """
-        Удаление машин с парковки
+    def get_index_by_book_id(self, ind) -> (int, str):
+        if not isinstance(ind, int):
+            raise TypeError('Ошибка типа!')
+        list_id = [Book.id_ for Book in list_books]
+        if ind in list_id:
+            return list_id.index(ind)
+        else:
+            raise ValueError("Книги с запрашиваемым id не существует")
 
-        :param remove_cars: Количество удаляемых машин
-        :raise ValueError: Если количество уехавших машин превышает количество парковочных мест,
-        то возвращается ошибка.
+if __name__ == '__main__':
+    empty_library = Library()  # инициализируем пустую библиотеку
+    print(empty_library.get_next_book_id())  # проверяем следующий id для пустой библиотеки
 
-        :return: Количество уехавших машин
+    list_books = [
+        Book(id_=book_dict["id"], name=book_dict["name"], pages=book_dict["pages"]) for book_dict in BOOKS_DATABASE
+    ]
+    library_with_books = Library(books=list_books)  # инициализируем библиотеку с книгами
+    print(library_with_books.get_next_book_id())  # проверяем следующий id для непустой библиотеки
 
-        Примеры:
-        >>> parking = Parking(10, 10)
-        >>> parking.remove_cars_from_parking(7)
-        """
-
-class Scales:
-    def __init__(self, max_weight: Union[int, float], weight_now: Union[int, float]):
-        if not isinstance(max_weight, (int, float)):
-            raise TypeError('Ошибка типа! Параметр должен быть int или float')
-        if max_weight <= 0:
-            raise ValueError('Максимальный вес, который выдерживают весы должен быть положительным')
-
-        if not isinstance(weight_now, (int, float)):
-            raise TypeError('Ошибка типа! Параметр должен быть int или float')
-        if weight_now < 0:
-            raise ValueError('Вес, положенный на весы, не может быть отрицательным')
-        self.max_weight = max_weight
-        self.weight_now = weight_now
-
-    def add_weight_to_scales(self, add_weight: Union[int, float]) -> None:
-        """
-        Добавление веса на весы.
-        :param add_weight: Количество добавляемого веса
-
-        :raise ValueError: Если масса, добавляемая на весы, больше максимально допустимой,
-         то вызываем ошибку
-
-        Примеры:
-        >>> scales = Scales(100, 50)
-        >>> scales.add_weight_to_scales(40)
-        """
-        if not isinstance(add_weight, (int, float)):
-            raise TypeError("Добавляемые вес должен быть int или float'")
-        if add_weight < 0:
-            raise ValueError("Добавляемый вес долже быть больше 0")
-
-    def remove_weight_from_scales(self, remove_weight: Union[int, float]) -> None:
-        """
-        Удаление веса с весов
-
-        :param remove_weight: Вес, удаляемый с весов
-        :raise ValueError: Если масса, удаляемая с весов больше, чем масса, которая была на весах
-        то возвращается ошибка.
-
-        :return: Удаляемая с весов масса
-
-        Примеры:
-        >>> scales = Scales(100, 50)
-        >>> scales.remove_weight_from_scales(45)
-        """
-
-if __name__ == "__main__":
-    doctest.testmod()
+    print(library_with_books.get_index_by_book_id(1))  # проверяем индекс книги с id = 1
